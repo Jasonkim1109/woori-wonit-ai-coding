@@ -75,7 +75,7 @@ function renderTransactionList() {
 }
 
 function renderBalance() {
-  const balanceEl = document.getElementById("blance");
+  const balanceEl = document.getElementById("balance");
   balanceEl.textContent = formatCurrency(ACCOUNTS[0].balance);
 }
 
@@ -83,6 +83,7 @@ function renderBalance() {
 
 function handleDeposit() {
   ACCOUNTS[0].balance += 10000;
+  renderBalance();
   alert("10,000원이 입금되었습니다.");
 }
 
@@ -98,7 +99,7 @@ interestBtn.addEventListener("click", () => {
   const interest = calcInterest(ACCOUNTS[0].balance, rate);
   const newBalance = ACCOUNTS[0].balance + interest;
   document.querySelector("#interestResult").textContent =
-    "이자 " + interest + "원 적용 → 잔액 " + newBalance + "원";
+    "이자 " + Math.round(interest) + "원 적용 → 잔액 " + Math.round(newBalance) + "원";
 });
 
 // ---------- 환율 ----------
@@ -107,8 +108,9 @@ async function fetchExchangeRate() {
   return new Promise((resolve) => setTimeout(() => resolve(1384), 500));
 }
 
-const rate = fetchExchangeRate();
-document.querySelector("#exchangeRate").textContent = rate + "원";
+fetchExchangeRate().then((rate) => {
+  document.querySelector("#exchangeRate").textContent = rate + "원";
+});
 
 // ---------- 이체 확인 모달 ----------
 
@@ -137,6 +139,6 @@ renderCategorySummary();
 renderTransactionList();
 
 const depositBtn = document.querySelector("#depositBtn");
-depositBtn.addEventListener("click", handleDeposit());
+depositBtn.addEventListener("click", handleDeposit);
 
 renderBalance();
